@@ -3,6 +3,8 @@ package com.cwd.imageloader.cache;
 import android.graphics.Bitmap;
 import android.util.LruCache;
 
+import com.cwd.imageloader.utils.Utils;
+
 /**
  * @author chenweide
  */
@@ -22,11 +24,13 @@ public class MemoryCache extends ImageCache {
 
     @Override
     public void put(String url, Bitmap bitmap) {
+        url = Utils.hashKey(url);
         lruCache.put(url,bitmap);
     }
 
     @Override
     public Bitmap get(String url) {
+        url = Utils.hashKey(url);
         return lruCache.get(url);
     }
 }

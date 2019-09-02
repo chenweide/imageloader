@@ -8,6 +8,7 @@ import android.widget.ImageView;
 
 import com.cwd.imageloader.ImageLoader;
 import com.cwd.imageloader.ImageLoaderConfig;
+import com.cwd.imageloader.cache.DoubleCache;
 import com.cwd.imageloader.cache.MemoryCache;
 import com.cwd.imageloader.request.OriginImageRequest;
 
@@ -44,7 +45,7 @@ public class PhotoActivity extends AppCompatActivity {
 
     private void initImageLoader(){
         ImageLoaderConfig.Builder builder = new ImageLoaderConfig.Builder();
-        builder.setImageCache(new MemoryCache());
+        builder.setImageCache(new DoubleCache(this));
         builder.setImageRequest(new OriginImageRequest());
         ImageLoader.getInstance().init(builder.build());
     }
