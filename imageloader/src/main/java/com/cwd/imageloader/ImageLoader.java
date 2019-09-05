@@ -7,6 +7,8 @@ import com.cwd.imageloader.cache.ImageCache;
 import com.cwd.imageloader.request.ImageRequest;
 import com.cwd.imageloader.request.ImageRequestListener;
 
+import java.util.LinkedList;
+
 /**
  * @author chenweide
  */
@@ -15,6 +17,10 @@ public class ImageLoader {
     private ImageLoaderConfig mConfig;
     private ImageCache mImageCache;
     private ImageRequest mImageRequest;
+    private int placeholder;
+    private int error;
+
+    private LinkedList<ImageRequest> requestQueue = new LinkedList<>();
 
     private ImageLoader(){}
 
@@ -39,12 +45,15 @@ public class ImageLoader {
         if(mConfig !=null){
             this.mImageCache = mConfig.getImageCache();
             this.mImageRequest = mConfig.getImageRequest();
+            this.placeholder = mConfig.getPlaceholder();
+            this.error = mConfig.getError();
         }else{
             throw new IllegalStateException("请先调用 ImageLoader.init() 进行初始化");
         }
     }
 
     public void displayImage(String url, final ImageView imageView){
+        setImageLoadStatus(imageView,LoadStatus.LOADING);
         imageView.setTag(url);
         //已有内存缓存则使用内存缓存
         Bitmap bitmap = mImageCache.get(url);
@@ -64,10 +73,18 @@ public class ImageLoader {
 
                 @Override
                 public void onError() {
-
+                    setImageLoadStatus(imageView,LoadStatus.ERROR);
                 }
             });
 
+        }
+    }
+
+    private void setImageLoadStatus(ImageView imageView,LoadStatus loadStatus){
+        if(loadStatus == LoadStatus.LOADING){
+            imageView.setImageResource(placeholder);
+        }else if(loadStatus == LoadStatus.ERROR){
+            imageView.setImageResource(error);
         }
     }
 
