@@ -1,5 +1,7 @@
 package com.cwd.loadphoto;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -36,19 +38,24 @@ public class PhotoActivity extends AppCompatActivity {
         btnLoad.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ImageLoader.getInstance().displayImage(imgUrls[0],iv1);
-                ImageLoader.getInstance().displayImage(imgUrls[1],iv2);
-                ImageLoader.getInstance().displayImage(imgUrls[2],iv3);
+//                ImageLoader.getInstance().displayImage(imgUrls[0],iv1);
+//                ImageLoader.getInstance().displayImage(imgUrls[1],iv2);
+//                ImageLoader.getInstance().displayImage(imgUrls[2],iv3);
+
+                Bitmap bitmap = BitmapFactory.decodeResource(getResources(),R.drawable.icon_error);
+                iv1.setImageBitmap(bitmap);
             }
         });
+
     }
 
     private void initImageLoader(){
         ImageLoaderConfig.Builder builder = new ImageLoaderConfig.Builder();
-        builder.setImageCache(new DoubleCache(this));
-        builder.setImageRequest(new OriginImageRequest());
-        builder.setPlaceholder(R.drawable.icon_loading);
-        builder.setError(R.drawable.icon_error);
+        builder.setImageCache(new DoubleCache(this))
+        .setImageRequest(new OriginImageRequest())
+        .setPlaceholder(R.drawable.icon_loading)
+        .setError(R.drawable.icon_error);
+//        .dontCompress();
         ImageLoader.getInstance().init(builder.build());
     }
 }

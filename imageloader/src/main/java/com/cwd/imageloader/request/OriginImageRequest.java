@@ -4,6 +4,9 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.widget.ImageView;
 
+import com.cwd.imageloader.ImageInfo;
+import com.cwd.imageloader.processor.ImageProcessor;
+
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -16,7 +19,12 @@ import java.util.concurrent.Executors;
  */
 public class OriginImageRequest implements ImageRequest {
 
+    private ImageProcessor mImageProcessor;
     private ExecutorService executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+
+    public OriginImageRequest(){
+        mImageProcessor = new ImageProcessor();
+    }
 
     /**
      * 网络请求图片
@@ -24,12 +32,12 @@ public class OriginImageRequest implements ImageRequest {
      * @return
      */
     @Override
-    public void load(final String url, final ImageRequestListener listener) {
+    public void load(final String url, final ImageInfo imageInfo, final ImageRequestListener listener) {
         executorService.submit(new Runnable() {
             @Override
             public void run() {
                 if(listener != null){
-                    Bitmap bitmap = downloadImage(url);
+                    Bitmap bitmap = downloadImage(url,imageInfo);
                     if(bitmap != null){
                         listener.onSuccess(url,bitmap);
                     }else{
@@ -42,11 +50,16 @@ public class OriginImageRequest implements ImageRequest {
         });
     }
 
-    private Bitmap downloadImage(String url){
+    private Bitmap downloadImage(String url,ImageInfo imageInfo){
         try {
             URL imageUrl = new URL(url);
             HttpURLConnection conn = (HttpURLConnection) imageUrl.openConnection();
-            Bitmap bitmap = BitmapFactory.decodeStream(conn.getInputStream());
+            Bitmap bitmap = null;
+            if(imageInfo.isDontCompress()){
+                bitmap = mImageProcessor.compress(conn.getInputStream(),imageInfo.getWidth(),imageInfo.getHeight());
+            }else{
+                bitmap = BitmapFactory.decodeStream(conn.getInputStream());
+            }
             conn.disconnect();
             return bitmap;
         } catch (MalformedURLException e) {

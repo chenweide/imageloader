@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.widget.ImageView;
 
 import com.cwd.imageloader.cache.ImageCache;
+import com.cwd.imageloader.processor.ImageProcessor;
 import com.cwd.imageloader.request.ImageRequest;
 import com.cwd.imageloader.request.ImageRequestListener;
 
@@ -19,6 +20,8 @@ public class ImageLoader {
     private ImageRequest mImageRequest;
     private int placeholder;
     private int error;
+    private boolean dontCompress;
+    private ImageInfo mImageInfo;
 
     private LinkedList<ImageRequest> requestQueue = new LinkedList<>();
 
@@ -47,12 +50,14 @@ public class ImageLoader {
             this.mImageRequest = mConfig.getImageRequest();
             this.placeholder = mConfig.getPlaceholder();
             this.error = mConfig.getError();
+            this.dontCompress = mConfig.isDontCompress();
         }else{
             throw new IllegalStateException("请先调用 ImageLoader.init() 进行初始化");
         }
     }
 
     public void displayImage(String url, final ImageView imageView){
+        ImageInfo imageInfo = generateImageInfo(imageView);
         setImageLoadStatus(imageView,LoadStatus.LOADING);
         imageView.setTag(url);
         //已有内存缓存则使用内存缓存
@@ -62,7 +67,7 @@ public class ImageLoader {
         }else{
             //本地没有缓存则从网络获取
             imageView.setTag(url);
-            mImageRequest.load(url, new ImageRequestListener() {
+            mImageRequest.load(url,imageInfo, new ImageRequestListener() {
                 @Override
                 public void onSuccess(String url, Bitmap bitmap) {
                     if(imageView.getTag().equals(url)){
@@ -88,5 +93,12 @@ public class ImageLoader {
         }
     }
 
+    private ImageInfo generateImageInfo(ImageView imageView){
+        ImageInfo imageInfo = new ImageInfo();
+        imageInfo.setWidth(imageView.getMeasuredWidth());
+        imageInfo.setHeight(imageView.getMeasuredHeight());
+        imageInfo.setDontCompress(dontCompress);
+        return imageInfo;
+    }
 
 }
