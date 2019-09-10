@@ -56,9 +56,9 @@ public class OriginImageRequest implements ImageRequest {
             HttpURLConnection conn = (HttpURLConnection) imageUrl.openConnection();
             Bitmap bitmap = null;
             if(imageInfo.isDontCompress()){
-                bitmap = mImageProcessor.compress(conn.getInputStream(),imageInfo.getWidth(),imageInfo.getHeight());
-            }else{
                 bitmap = BitmapFactory.decodeStream(conn.getInputStream());
+            }else{
+                bitmap = mImageProcessor.compress(conn.getInputStream(),imageInfo.getWidth(),imageInfo.getHeight());
             }
             conn.disconnect();
             return bitmap;

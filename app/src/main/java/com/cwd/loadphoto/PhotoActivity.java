@@ -51,8 +51,8 @@ public class PhotoActivity extends AppCompatActivity {
         builder.setImageCache(new DoubleCache(this))
         .setImageRequest(new OriginImageRequest())
         .setPlaceholder(R.drawable.icon_loading)
-        .setError(R.drawable.icon_error);
-//        .dontCompress();
+        .setError(R.drawable.icon_error)
+        .dontCompress();
         ImageLoader.getInstance().init(builder.build());
     }
 }
