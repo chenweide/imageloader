@@ -38,12 +38,9 @@ public class PhotoActivity extends AppCompatActivity {
         btnLoad.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                ImageLoader.getInstance().displayImage(imgUrls[0],iv1);
-//                ImageLoader.getInstance().displayImage(imgUrls[1],iv2);
-//                ImageLoader.getInstance().displayImage(imgUrls[2],iv3);
-
-                Bitmap bitmap = BitmapFactory.decodeResource(getResources(),R.drawable.icon_error);
-                iv1.setImageBitmap(bitmap);
+                ImageLoader.getInstance().displayImage(imgUrls[0],iv1);
+                ImageLoader.getInstance().displayImage(imgUrls[1],iv2);
+                ImageLoader.getInstance().displayImage(imgUrls[2],iv3);
             }
         });
 
